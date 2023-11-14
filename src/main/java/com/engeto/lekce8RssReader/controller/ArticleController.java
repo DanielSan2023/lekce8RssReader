@@ -5,6 +5,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
@@ -42,6 +43,18 @@ public class ArticleController {
         String filePath = "historic.txt";
         return ResponseEntity.ok(readFileContent(filePath));
     }
+
+    // Chcel som to automatizovat  aby som do @GetMapping("/article")
+    // zadal len categoriu : scifi,romantic,historic
+    // a našiel som takto @RequestParam String category
+    //localhost:8080/api/article?category=scifi
+    @GetMapping("/article")
+    public ResponseEntity<String> getArticle(@RequestParam String category) {
+        String filePath = category + ".txt";
+        return ResponseEntity.ok(readFileContent(filePath));
+    }
+
+
     private String readFileContent(String filePath) {
         try {
             Resource resource = resourceLoader.getResource("classpath:" + filePath);
