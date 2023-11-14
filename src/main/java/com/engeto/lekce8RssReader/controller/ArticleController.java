@@ -13,6 +13,8 @@ import org.springframework.util.FileCopyUtils;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -47,13 +49,21 @@ public class ArticleController {
     // Chcel som to automatizovat  aby som do @GetMapping("/article")
     // zadal len categoriu : scifi,romantic,historic
     // a našiel som takto @RequestParam String category
-    //localhost:8080/api/article?category=scifi
+    //localhost:8082/api/article?category=scifi
+
     @GetMapping("/article")
     public ResponseEntity<String> getArticle(@RequestParam String category) {
         String filePath = category + ".txt";
+        if (!isValidCategory(filePath)) {
+            return ResponseEntity.badRequest().body("Neplatná kategorie: " + category);
+        }
         return ResponseEntity.ok(readFileContent(filePath));
     }
 
+    private boolean isValidCategory(String filePath) {
+        Resource resource = resourceLoader.getResource("classpath:" + filePath);
+        return resource.exists();
+    }
 
     private String readFileContent(String filePath) {
         try {
